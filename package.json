@@ -1,0 +1,37 @@
+{
+  "name": "crud2-1.0",
+  "version": "1.0.0",
+  "description": "Final sprint project for Keyin College semester 3 2022 ",
+  "main": "index.js",
+  "scripts": {
+    "devStart": "nodemon server.js"
+  },
+  "keywords": [
+    "CRUD",
+    "Monogodb",
+    "PGadmin",
+    "Passport"
+  ],
+  "author": "Cody Fisher, Jen Colford, Matt Murphy",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.3",
+    "fs": "^0.0.1-security",
+    "method-override": "^3.0.0",
+    "mongodb": "^4.8.1",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1",
+    "nodemon": "^2.0.19"
+  },
+  "nodemonConfig": {
+    "ignore": ["userLog.json"]
+  }
+}

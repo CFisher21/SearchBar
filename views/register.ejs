@@ -1,0 +1,29 @@
+<!-- include header -->
+<%- include('include/_header') %>
+<!-- /include header -->
+
+<!-- include nav -->
+<%- include('include/_nav') %>
+<!-- /include nav -->
+
+<div class="center">
+<div class="container">
+<form action="/register" method="POST">
+    <div class="center">
+    <h1>Register</h1>
+    </div>
+<div class="center">
+    <input type="text" id="name" name="name" placeholder="Name" class="input-class">
+</div>
+<div class="center">
+    <input type="text" id="email" name="email" placeholder="Email" class="input-class">
+</div>
+<div class="center">
+    <input type="text" id="password" name="password" placeholder="Password" class="input-class">
+</div>
+<div class="center">
+<button type="submit" class="submit-button">Register</button>
+</div>
+</form>
+</div>
+</div>

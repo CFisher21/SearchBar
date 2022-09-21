@@ -1,0 +1,27 @@
+
+
+<form action="/searchBothResults" method="GET">
+    <label for="search">Search</label>
+    <input type="search" name="search">
+    <button type="submit">Search</button>
+</form>
+<% if (typeof(both_rows) !== 'undefined') { %>
+    <table>
+    <tr>
+        <th>First Name </th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Occupation</th> 
+    </tr>   
+    <% if(both_rows.length > 0) { %>
+        <% both_rows.forEach(pgData => { %>
+                    <tr>
+                        <th><%= pgData.first_name%></th>
+                        <th><%= pgData.last_name%></th>
+                        <th><%= pgData.email%></th> 
+                        <th><%= pgData.occupation%></th> 
+                    </tr>
+            <% }) %>
+    <% } %>
+    </table>
+<%}%>

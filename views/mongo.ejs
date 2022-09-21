@@ -1,0 +1,26 @@
+<form action="/mongoSearch" method="GET">
+    <label for="search">Search</label>
+    <input type="search" name="search">
+    <button type="submit">Search</button>
+</form>
+
+<% if (typeof(mongo_rows) !== 'undefined') { %>
+    <table>
+    <tr>
+        <th>First Name </th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Occupation</th> 
+    </tr>   
+    <% if(mongo_rows.length > 0) { %>
+        <% mongo_rows.forEach(moData => { %>
+                    <tr>
+                        <th><%= moData.first_name%></th>
+                        <th><%= moData.last_name%></th>
+                        <th><%= moData.email%></th> 
+                        <th><%= moData.occupation%></th> 
+                    </tr>
+            <% }) %>
+    <% } %>
+    </table>
+<%}%>
