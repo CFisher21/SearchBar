@@ -4,7 +4,7 @@
     <button type="submit">Search</button>
 </form>
 
-<% if (typeof(mongo_rows) !== 'undefined') { %>
+<% if (typeof(result) !== 'undefined') { %>
     <table>
     <tr>
         <th>First Name </th>
@@ -12,13 +12,13 @@
         <th>Email</th>
         <th>Occupation</th> 
     </tr>   
-    <% if(mongo_rows.length > 0) { %>
-        <% mongo_rows.forEach(moData => { %>
+    <% if(result.length > 0) { %>
+        <% result.forEach(Data => { %>
                     <tr>
-                        <th><%= moData.first_name%></th>
-                        <th><%= moData.last_name%></th>
-                        <th><%= moData.email%></th> 
-                        <th><%= moData.occupation%></th> 
+                        <th><%= Data.item.first_name%></th>
+                        <th><%= Data.item.last_name%></th>
+                        <th><%= Data.item.email%></th> 
+                        <th><%= Data.item.occupation%></th> 
                     </tr>
             <% }) %>
     <% } %>

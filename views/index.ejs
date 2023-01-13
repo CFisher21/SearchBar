@@ -6,9 +6,8 @@
 </nav>
 
 <form action="/search" method="GET">
-    <label for="search">Search</label>
-    <input type="search" name="search">
-    <button type="submit">Search</button>
+    <input type="text" name="search" placeholder="Search Postgres Database..">
+    <input type="submit" value="Search">
 </form>
 <% if (typeof(postgres_rows) !== 'undefined') { %>
     <table>
