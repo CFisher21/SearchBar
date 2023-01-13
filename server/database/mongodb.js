@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const uri = "mongodb+srv://test:test123@newcluster.adhcw.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://admin:admin123@searchbar.ipl9gvt.mongodb.net/test";
 const pool = new MongoClient(uri);
 
 module.exports = pool;

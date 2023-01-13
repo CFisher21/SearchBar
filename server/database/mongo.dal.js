@@ -1,11 +1,11 @@
 
 const dal = require("./mongodb");
 
-async function mongoSearch(search) {
+async function mongoSearch() {
     
    try {
         await dal.connect()
-        const mongoData = dal.db('test').collection('sprint2').find({$or: [{"first_name":`${search}`}, {"last_name":`${search}`}, {"email" : `${search}`}, {"position" : `${search}`} ]})
+        const mongoData = dal.db('SearchBar').collection('sprint2').find({})
         const results = await mongoData.toArray()
         return results
         
