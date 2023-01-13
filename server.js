@@ -13,6 +13,7 @@ const pgDal = require('./server/database/pg.dal')
 const mDal = require('./server/database/mongo.dal')
 const bDal = require('./server/database/both.dal')
 const fs = require('fs')
+const Fuse = require('fuse.js')
 
 const initializePassport = require('./passport-config');
 
@@ -120,8 +121,19 @@ app.get('/search', checkAuthenticated, async (req, res) => {
 
 app.get('/mongoSearch', checkAuthenticated, async (req, res) => {
     const search_term2 = req.query.search;
-    let mongo_rows = await mDal.mongoSearch(search_term2)
-    res.render('mongo.ejs', {mongo_rows})
+    let mongo_rows = await mDal.mongoSearch()
+
+    const fuse = new Fuse(mongo_rows, {
+        keys: [
+            'first_name',
+            'last_name',
+            'email',
+            'occupation'
+        ]
+    });
+
+    const result = fuse.search(search_term2)
+    res.render('mongo.ejs', {result})
 
     fs.readFile(__dirname + '/userLog.json', (error, data) => {
 

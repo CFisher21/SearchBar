@@ -21,6 +21,7 @@
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",
     "fs": "^0.0.1-security",
+    "fuse.js": "^6.6.2",
     "method-override": "^3.0.0",
     "mongodb": "^4.8.1",
     "passport": "^0.6.0",
@@ -32,6 +33,8 @@
     "nodemon": "^2.0.19"
   },
   "nodemonConfig": {
-    "ignore": ["userLog.json"]
+    "ignore": [
+      "userLog.json"
+    ]
   }
 }
