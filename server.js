@@ -140,7 +140,7 @@ app.get('/mongoSearch', checkAuthenticated, async (req, res) => {
     });
     
     const result = fuse.search(search_term2)
-    res.render('mongo.ejs', {result})
+    res.render('mongo.ejs', {name: req.user.name, result})
 
     fs.readFile(__dirname + '/userLog.json', (error, data) => {
 
@@ -201,7 +201,7 @@ app.get('/searchBothResults', checkAuthenticated, async (req, res) => {
     
     let both_rows = pgrows.concat(mo_rows)
    
-    res.render('searchboth.ejs', {both_rows})
+    res.render('searchboth.ejs', {name: req.user.name, both_rows})
     
 
     fs.readFile(__dirname + '/userLog.json', (error, data) => {
