@@ -14,9 +14,9 @@ const mDal = require('./server/database/mongo.dal')
 const bDal = require('./server/database/both.dal')
 const fs = require('fs')
 const Fuse = require('fuse.js')
-
 const initializePassport = require('./passport-config');
 
+// this is for passport.js. it takes the data on file an assigns it to email and id so passport can use it
 initializePassport(
     passport, 
     email => users.find(user => user.email === email),
@@ -39,6 +39,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
 
+// these are the routes to navigate the webpage checkAuthenticated = needs to be logged in to see that specific page if not you will be redirected to the login page. Works in reverse too with checkNotAuthenticated you can't see those webpages if you are logged in.
 app.get('/', (req, res) => {
     res.redirect('/register')
 })
@@ -56,11 +57,11 @@ app.get('/register', checkNotAuthenticated, (req, res) =>{
 })
 
 app.get('/mongo', checkAuthenticated, (req, res) => {
-    res.render('mongo.ejs')
+    res.render('mongo.ejs', { name: req.user.name })
 })
 
 app.get('/searchBoth', checkAuthenticated, (req, res) => {
-    res.render('searchboth.ejs')
+    res.render('searchboth.ejs', { name: req.user.name })
 })
 
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
@@ -84,6 +85,8 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
     }
 })
 
+// below are the search methods to search the databases
+//postgres search
 app.get('/search', checkAuthenticated, async (req, res) => {
     const search_term = req.query.search;
     let postgres_rows = await pgDal.getSearch(search_term)
@@ -119,11 +122,16 @@ app.get('/search', checkAuthenticated, async (req, res) => {
     })
 })
 
+// mongoDB search
 app.get('/mongoSearch', checkAuthenticated, async (req, res) => {
     const search_term2 = req.query.search;
     let mongo_rows = await mDal.mongoSearch()
 
     const fuse = new Fuse(mongo_rows, {
+        minMatchCharLength: 3,
+        threshold: 0.3,
+        distance: 1,
+        includeScore: true,
         keys: [
             'first_name',
             'last_name',
@@ -131,7 +139,7 @@ app.get('/mongoSearch', checkAuthenticated, async (req, res) => {
             'occupation'
         ]
     });
-
+    
     const result = fuse.search(search_term2)
     res.render('mongo.ejs', {result})
 
@@ -166,10 +174,36 @@ app.get('/mongoSearch', checkAuthenticated, async (req, res) => {
 
 })
 
+// searches both databases at the same time
 app.get('/searchBothResults', checkAuthenticated, async (req, res) => {
     const search_term3 = req.query.search;
-    let both_rows = await bDal.bothSearch(search_term3)
+    let pgrows = await pgDal.getSearch(search_term3)
+    let mongo_rows = await mDal.mongoSearch()
+
+    const fuse = new Fuse(mongo_rows, {
+        minMatchCharLength: 3,
+        threshold: 0.3,
+        distance: 1,
+        includeScore: true,
+        keys: [
+            'first_name',
+            'last_name',
+            'email',
+            'occupation'
+        ]
+    });
+    
+    let moresult = fuse.search(search_term3)
+    let mo_rows = []
+
+    moresult.forEach(element => {
+        mo_rows.push(element.item)
+    });
+    
+    let both_rows = pgrows.concat(mo_rows)
+   
     res.render('searchboth.ejs', {both_rows})
+    
 
     fs.readFile(__dirname + '/userLog.json', (error, data) => {
 
@@ -209,6 +243,7 @@ app.delete('/logout', (req, res) => {
     
 })
 
+// this function handles what traffic is allowed on what webpage
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
