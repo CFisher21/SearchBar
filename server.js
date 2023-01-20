@@ -11,7 +11,6 @@ const session = require('express-session')
 const methodOverride = require('method-override')
 const pgDal = require('./server/database/pg.dal')
 const mDal = require('./server/database/mongo.dal')
-const bDal = require('./server/database/both.dal')
 const fs = require('fs')
 const Fuse = require('fuse.js')
 const initializePassport = require('./passport-config');
