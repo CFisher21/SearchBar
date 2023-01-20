@@ -14,6 +14,7 @@ const mDal = require('./server/database/mongo.dal')
 const fs = require('fs')
 const Fuse = require('fuse.js')
 const initializePassport = require('./passport-config');
+var users = require('./users.json')
 
 // this is for passport.js. it takes the data on file an assigns it to email and id so passport can use it
 initializePassport(
@@ -24,7 +25,7 @@ initializePassport(
 
 const app = express()
 
-const users = []
+
 app.use(express.static('public'));
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded({ extended: false}))
@@ -72,12 +73,30 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
 app.post('/register', checkNotAuthenticated, async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        users.push({
-            id: Date.now().toString(),
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword
-    })
+        fs.readFile(__dirname + '/users.json', (error, data) => {
+            let users = {}
+            users.id = Date.now().toString(),
+            users.name = req.body.name, 
+            users.email = req.body.email,
+            users.password = hashedPassword
+            data = JSON.parse(data);
+            console.log(data.email)
+            if(error) {
+                throw error
+            } else {
+                console.log("users.json sucessfully read")
+            }
+            
+            
+            data.push(users)
+            write = JSON.stringify(data, null, 2)
+
+            fs.writeFile(__dirname + '/users.json', write, (error) => {
+                if(error) throw error
+                console.log('Data wrote to users.json')
+            })
+            
+        })
     res.redirect('/login')
     } catch {
     res.redirect('/register')
@@ -88,9 +107,10 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
 //postgres search
 app.get('/search', checkAuthenticated, async (req, res) => {
     const search_term = req.query.search;
-    let postgres_rows = await pgDal.getSearch(search_term)
+    const search_by = req.query.searchby;
+    let postgres_rows = await pgDal.getSearch(search_term, search_by)
     res.render('index.ejs', { name: req.user.name, postgres_rows})
-
+    
     fs.readFile(__dirname + '/userLog.json', (error, data) => {
 
         let newData = {};
@@ -124,21 +144,51 @@ app.get('/search', checkAuthenticated, async (req, res) => {
 // mongoDB search
 app.get('/mongoSearch', checkAuthenticated, async (req, res) => {
     const search_term2 = req.query.search;
+    const search_by = req.query.searchby;
     let mongo_rows = await mDal.mongoSearch()
 
-    const fuse = new Fuse(mongo_rows, {
-        minMatchCharLength: 3,
-        threshold: 0.3,
-        distance: 1,
-        includeScore: true,
-        keys: [
-            'first_name',
-            'last_name',
-            'email',
-            'occupation'
-        ]
-    });
-    
+    if(search_by == "firstname") {
+        fuse = new Fuse(mongo_rows, {
+            minMatchCharLength: 3,
+            threshold: 0.3,
+            distance: 1,
+            includeScore: true,
+            keys: [
+                'first_name'
+            ]
+        });
+    } else if (search_by == "lastname") {
+        fuse = new Fuse(mongo_rows, {
+            minMatchCharLength: 3,
+            threshold: 0.3,
+            distance: 1,
+            includeScore: true,
+            keys: [
+                'last_name'
+            ]
+        });
+    } else if (search_by == "email") {
+        fuse = new Fuse(mongo_rows, {
+            minMatchCharLength: 3,
+            threshold: 0.3,
+            distance: 1,
+            includeScore: true,
+            keys: [
+                'email'
+            ]
+        });
+    } else {
+        fuse = new Fuse(mongo_rows, {
+            minMatchCharLength: 3,
+            threshold: 0.3,
+            distance: 1,
+            includeScore: true,
+            keys: [
+                'occupation'
+            ]
+        });
+    }
+
     const result = fuse.search(search_term2)
     res.render('mongo.ejs', {name: req.user.name, result})
 
@@ -176,21 +226,51 @@ app.get('/mongoSearch', checkAuthenticated, async (req, res) => {
 // searches both databases at the same time
 app.get('/searchBothResults', checkAuthenticated, async (req, res) => {
     const search_term3 = req.query.search;
-    let pgrows = await pgDal.getSearch(search_term3)
+    const search_by = req.query.searchby;
+    let pgrows = await pgDal.getSearch(search_term3, search_by)
     let mongo_rows = await mDal.mongoSearch()
 
-    const fuse = new Fuse(mongo_rows, {
-        minMatchCharLength: 3,
-        threshold: 0.3,
-        distance: 1,
-        includeScore: true,
-        keys: [
-            'first_name',
-            'last_name',
-            'email',
-            'occupation'
-        ]
-    });
+    if(search_by == "firstname") {
+        fuse = new Fuse(mongo_rows, {
+            minMatchCharLength: 3,
+            threshold: 0.3,
+            distance: 1,
+            includeScore: true,
+            keys: [
+                'first_name'
+            ]
+        });
+    } else if (search_by == "lastname") {
+        fuse = new Fuse(mongo_rows, {
+            minMatchCharLength: 3,
+            threshold: 0.3,
+            distance: 1,
+            includeScore: true,
+            keys: [
+                'last_name'
+            ]
+        });
+    } else if (search_by == "email") {
+        fuse = new Fuse(mongo_rows, {
+            minMatchCharLength: 3,
+            threshold: 0.3,
+            distance: 1,
+            includeScore: true,
+            keys: [
+                'email'
+            ]
+        });
+    } else {
+        fuse = new Fuse(mongo_rows, {
+            minMatchCharLength: 3,
+            threshold: 0.3,
+            distance: 1,
+            includeScore: true,
+            keys: [
+                'occupation'
+            ]
+        });
+    }
     
     let moresult = fuse.search(search_term3)
     let mo_rows = []
