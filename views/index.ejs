@@ -5,11 +5,11 @@
 <!--include nav-->
 <%- include('include/_nav') %>
 <!-- /include nav -->
-<h1>Hello <%= name%></h1>
+<h1>Hello, <%= name%></h1>
 <form action="/search" method="GET">
     <input type="text" name="search" placeholder="Search Postgres">
     <label for="searchby">Search by: </label>
-    <select id="searchby">
+    <select id="searchby" name="searchby">
         <option value="firstname">First Name</option>
         <option value="lastname">Last Name</option>
         <option value="email">Email</option>
