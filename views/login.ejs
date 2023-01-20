@@ -1,3 +1,6 @@
+<!-- include header -->
+<%- include('include/_header') %>
+<!-- /include header -->
 <h1>Login</h1>
 <% if (messages.error) { %>
     <%= messages.error %>
@@ -14,3 +17,6 @@
 <button type="submit">Login</button>
 </form>
 <a href="/register">Register</a>
+<!-- include footer -->
+<%- include('include/_footer') %>
+<!-- /include footer -->

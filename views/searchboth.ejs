@@ -1,5 +1,11 @@
+<!-- include header -->
+<%- include('include/_header') %>
+<!-- /include header -->
 
-
+<!--include nav-->
+<%- include('include/_nav') %>
+<!-- /include nav -->
+<h1>Hello <%= name%></h1>
 <form action="/searchBothResults" method="GET">
     <label for="search">Search</label>
     <input type="search" name="search">
@@ -25,3 +31,6 @@
     <% } %>
     </table>
 <%}%>
+<!-- include footer -->
+<%- include('include/_footer') %>
+<!-- /include footer -->
