@@ -1,343 +1,320 @@
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config()
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
 
-const express = require('express');
-const PORT = 3000
-const bcrypt = require('bcrypt')
-const passport = require('passport');
-const flash = require('express-flash');
-const session = require('express-session')
-const methodOverride = require('method-override')
-const pgDal = require('./server/database/pg.dal')
-const mDal = require('./server/database/mongo.dal')
-const fs = require('fs')
-const Fuse = require('fuse.js')
-const initializePassport = require('./passport-config');
-var users = require('./users.json')
+const express = require("express");
+const PORT = 3000;
+const bcrypt = require("bcrypt");
+const passport = require("passport");
+const flash = require("express-flash");
+const session = require("express-session");
+const methodOverride = require("method-override");
+const pgDal = require("./server/database/pg.dal");
+const mDal = require("./server/database/mongo.dal");
+const fs = require("fs");
+const Fuse = require("fuse.js");
+const initializePassport = require("./passport-config");
+var users = require("./users.json");
 
 // this is for passport.js. it takes the data on file an assigns it to email and id so passport can use it
 initializePassport(
-    passport, 
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id) 
-)
+  passport,
+  (email) => users.find((user) => user.email === email),
+  (id) => users.find((user) => user.id === id)
+);
 
-const app = express()
+const app = express();
 
-
-app.use(express.static('public'));
-app.set('view-engine', 'ejs')
-app.use(express.urlencoded({ extended: false}))
-app.use(flash())
-app.use(session({
+app.use(express.static(__dirname + "/public"));
+app.set("view-engine", "ejs");
+app.use(express.urlencoded({ extended: false }));
+app.use(flash());
+app.use(
+  session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false
-}))
-app.use(passport.initialize())
-app.use(passport.session())
-app.use(methodOverride('_method'))
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(methodOverride("_method"));
 
 // these are the routes to navigate the webpage checkAuthenticated = needs to be logged in to see that specific page if not you will be redirected to the login page. Works in reverse too with checkNotAuthenticated you can't see those webpages if you are logged in.
-app.get('/', (req, res) => {
-    res.redirect('/register')
+app.get("/", (req, res) => {
+  res.redirect("/register");
+});
+
+app.get("/login-after", checkAuthenticated, (req, res) => {
+  res.render("index.ejs", { name: req.user.name });
+});
+
+app.get("/login", checkNotAuthenticated, (req, res) => {
+  res.render("login.ejs");
+});
+
+app.get("/register", checkNotAuthenticated, (req, res) => {
+  res.render("register.ejs");
+});
+
+app.get("/mongo", checkAuthenticated, (req, res) => {
+  res.render("mongo.ejs", { name: req.user.name });
+});
+
+app.get("/searchBoth", checkAuthenticated, (req, res) => {
+  res.render("searchboth.ejs", { name: req.user.name });
+});
+
+app.get("/terms", (req, res) => {
+  res.render("terms.ejs");
 })
 
-app.get('/login-after', checkAuthenticated, (req, res) => {
-    res.render('index.ejs', { name: req.user.name })
+app.get("/privacy", (req, res) => {
+  res.render("privacy.ejs");
 })
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
-    res.render('login.ejs')
-})
+app.post(
+  "/login",
+  checkNotAuthenticated,
+  passport.authenticate("local", {
+    successRedirect: "/login-after",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
 
-app.get('/register', checkNotAuthenticated, (req, res) =>{
-    res.render('register.ejs')
-})
-
-app.get('/mongo', checkAuthenticated, (req, res) => {
-    res.render('mongo.ejs', { name: req.user.name })
-})
-
-app.get('/searchBoth', checkAuthenticated, (req, res) => {
-    res.render('searchboth.ejs', { name: req.user.name })
-})
-
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/login-after',
-    failureRedirect: '/login',
-    failureFlash: true
-}))
-
-app.post('/register', checkNotAuthenticated, async (req, res) => {
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        fs.readFile(__dirname + '/users.json', (error, data) => {
-            let users = {}
-            users.id = Date.now().toString(),
-            users.name = req.body.name, 
-            users.email = req.body.email,
-            users.password = hashedPassword
-            data = JSON.parse(data);
-            console.log(data.email)
-            if(error) {
-                throw error
-            } else {
-                console.log("users.json sucessfully read")
-            }
-            
-            
-            data.push(users)
-            write = JSON.stringify(data, null, 2)
-
-            fs.writeFile(__dirname + '/users.json', write, (error) => {
-                if(error) throw error
-                console.log('Data wrote to users.json')
-            })
-            
-        })
-    res.redirect('/login')
-    } catch {
-    res.redirect('/register')
-    }
-})
+app.post("/register", checkNotAuthenticated, async (req, res) => {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    
+    fs.readFile(__dirname + "/users.json", (error, data) => {
+        let user = {};
+        user.id = Date.now().toString(),
+        user.name = req.body.name,
+        user.email = req.body.email,
+        user.password = hashedPassword;
+        data = JSON.parse(data);
+        data.push(user);
+        write = JSON.stringify(data, null, 2);
+        fs.writeFile(__dirname + "/users.json", write, (error) => {
+              if (error) throw error;
+              console.log("Data wrote to users.json");
+            });
+      
+    });
+    res.redirect("/login")
+});
 
 // below are the search methods to search the databases
 //postgres search
-app.get('/search', checkAuthenticated, async (req, res) => {
-    const search_term = req.query.search;
-    const search_by = req.query.searchby;
-    let postgres_rows = await pgDal.getSearch(search_term, search_by)
-    res.render('index.ejs', { name: req.user.name, postgres_rows})
-    
-    fs.readFile(__dirname + '/userLog.json', (error, data) => {
+app.get("/search", checkAuthenticated, async (req, res) => {
+  const search_term = req.query.search;
+  const search_by = req.query.searchby;
+  let postgres_rows = await pgDal.getSearch(search_term, search_by);
+  res.render("index.ejs", { name: req.user.name, postgres_rows });
 
-        let newData = {};
+  fs.readFile(__dirname + "/userLog.json", (error, data) => {
+    let newData = {};
 
-        newData.username = req.user.name;
-        newData.email = req.user.email;
-        newData.id = req.user.id;
-        newData.password = req.user.password
-        newData.searchterm = req.query.search
+    newData.username = req.user.name;
+    newData.email = req.user.email;
+    newData.id = req.user.id;
+    newData.password = req.user.password;
+    newData.searchterm = req.query.search;
 
-        if(error) {
-            throw error
-        } else {
-            console.log('userLog.json file read sucessfully')
-        }
+    if (error) {
+      throw error;
+    } else {
+      console.log("userLog.json file read sucessfully");
+    }
 
-        data = JSON.parse(data)
+    data = JSON.parse(data);
 
-        data.push(newData)
+    data.push(newData);
 
-        write = JSON.stringify(data, null, 2)
+    write = JSON.stringify(data, null, 2);
 
-        fs.writeFile(__dirname + '/userLog.json', write, (error) => {
-            if(error) throw error
-            console.log('Data wrote to userLog.json')
-        })
-
-    })
-})
+    fs.writeFile(__dirname + "/userLog.json", write, (error) => {
+      if (error) throw error;
+      console.log("Data wrote to userLog.json");
+    });
+  });
+});
 
 // mongoDB search
-app.get('/mongoSearch', checkAuthenticated, async (req, res) => {
-    const search_term2 = req.query.search;
-    const search_by = req.query.searchby;
-    let mongo_rows = await mDal.mongoSearch()
+app.get("/mongoSearch", checkAuthenticated, async (req, res) => {
+  const search_term2 = req.query.search;
+  const search_by = req.query.searchby;
+  let mongo_rows = await mDal.mongoSearch();
 
-    if(search_by == "firstname") {
-        fuse = new Fuse(mongo_rows, {
-            minMatchCharLength: 3,
-            threshold: 0.3,
-            distance: 1,
-            includeScore: true,
-            keys: [
-                'first_name'
-            ]
-        });
-    } else if (search_by == "lastname") {
-        fuse = new Fuse(mongo_rows, {
-            minMatchCharLength: 3,
-            threshold: 0.3,
-            distance: 1,
-            includeScore: true,
-            keys: [
-                'last_name'
-            ]
-        });
-    } else if (search_by == "email") {
-        fuse = new Fuse(mongo_rows, {
-            minMatchCharLength: 3,
-            threshold: 0.3,
-            distance: 1,
-            includeScore: true,
-            keys: [
-                'email'
-            ]
-        });
+  if (search_by == "firstname") {
+    fuse = new Fuse(mongo_rows, {
+      minMatchCharLength: 3,
+      threshold: 0.3,
+      distance: 1,
+      includeScore: true,
+      keys: ["first_name"],
+    });
+  } else if (search_by == "lastname") {
+    fuse = new Fuse(mongo_rows, {
+      minMatchCharLength: 3,
+      threshold: 0.3,
+      distance: 1,
+      includeScore: true,
+      keys: ["last_name"],
+    });
+  } else if (search_by == "email") {
+    fuse = new Fuse(mongo_rows, {
+      minMatchCharLength: 3,
+      threshold: 0.3,
+      distance: 1,
+      includeScore: true,
+      keys: ["email"],
+    });
+  } else {
+    fuse = new Fuse(mongo_rows, {
+      minMatchCharLength: 3,
+      threshold: 0.3,
+      distance: 1,
+      includeScore: true,
+      keys: ["occupation"],
+    });
+  }
+
+  const result = fuse.search(search_term2);
+  res.render("mongo.ejs", { name: req.user.name, result });
+
+  fs.readFile(__dirname + "/userLog.json", (error, data) => {
+    let newData = {};
+
+    newData.username = req.user.name;
+    newData.email = req.user.email;
+    newData.id = req.user.id;
+    newData.password = req.user.password;
+    newData.searchterm = req.query.search;
+
+    if (error) {
+      throw error;
     } else {
-        fuse = new Fuse(mongo_rows, {
-            minMatchCharLength: 3,
-            threshold: 0.3,
-            distance: 1,
-            includeScore: true,
-            keys: [
-                'occupation'
-            ]
-        });
+      console.log("userLog.json file read sucessfully");
     }
 
-    const result = fuse.search(search_term2)
-    res.render('mongo.ejs', {name: req.user.name, result})
+    data = JSON.parse(data);
 
-    fs.readFile(__dirname + '/userLog.json', (error, data) => {
+    data.push(newData);
 
-        let newData = {};
+    write = JSON.stringify(data, null, 2);
 
-        newData.username = req.user.name;
-        newData.email = req.user.email;
-        newData.id = req.user.id;
-        newData.password = req.user.password
-        newData.searchterm = req.query.search
-
-        if(error) {
-            throw error
-        } else {
-            console.log('userLog.json file read sucessfully')
-        }
-
-        data = JSON.parse(data)
-
-        data.push(newData)
-
-        write = JSON.stringify(data, null, 2)
-
-        fs.writeFile(__dirname + '/userLog.json', write, (error) => {
-            if(error) throw error
-            console.log('Data wrote to userLog.json')
-        })
-
-    })
-
-})
+    fs.writeFile(__dirname + "/userLog.json", write, (error) => {
+      if (error) throw error;
+      console.log("Data wrote to userLog.json");
+    });
+  });
+});
 
 // searches both databases at the same time
-app.get('/searchBothResults', checkAuthenticated, async (req, res) => {
-    const search_term3 = req.query.search;
-    const search_by = req.query.searchby;
-    let pgrows = await pgDal.getSearch(search_term3, search_by)
-    let mongo_rows = await mDal.mongoSearch()
+app.get("/searchBothResults", checkAuthenticated, async (req, res) => {
+  const search_term3 = req.query.search;
+  const search_by = req.query.searchby;
+  let pgrows = await pgDal.getSearch(search_term3, search_by);
+  let mongo_rows = await mDal.mongoSearch();
 
-    if(search_by == "firstname") {
-        fuse = new Fuse(mongo_rows, {
-            minMatchCharLength: 3,
-            threshold: 0.3,
-            distance: 1,
-            includeScore: true,
-            keys: [
-                'first_name'
-            ]
-        });
-    } else if (search_by == "lastname") {
-        fuse = new Fuse(mongo_rows, {
-            minMatchCharLength: 3,
-            threshold: 0.3,
-            distance: 1,
-            includeScore: true,
-            keys: [
-                'last_name'
-            ]
-        });
-    } else if (search_by == "email") {
-        fuse = new Fuse(mongo_rows, {
-            minMatchCharLength: 3,
-            threshold: 0.3,
-            distance: 1,
-            includeScore: true,
-            keys: [
-                'email'
-            ]
-        });
-    } else {
-        fuse = new Fuse(mongo_rows, {
-            minMatchCharLength: 3,
-            threshold: 0.3,
-            distance: 1,
-            includeScore: true,
-            keys: [
-                'occupation'
-            ]
-        });
-    }
-    
-    let moresult = fuse.search(search_term3)
-    let mo_rows = []
-
-    moresult.forEach(element => {
-        mo_rows.push(element.item)
+  if (search_by == "firstname") {
+    fuse = new Fuse(mongo_rows, {
+      minMatchCharLength: 3,
+      threshold: 0.3,
+      distance: 1,
+      includeScore: true,
+      keys: ["first_name"],
     });
-    
-    let both_rows = pgrows.concat(mo_rows)
-   
-    res.render('searchboth.ejs', {name: req.user.name, both_rows})
-    
+  } else if (search_by == "lastname") {
+    fuse = new Fuse(mongo_rows, {
+      minMatchCharLength: 3,
+      threshold: 0.3,
+      distance: 1,
+      includeScore: true,
+      keys: ["last_name"],
+    });
+  } else if (search_by == "email") {
+    fuse = new Fuse(mongo_rows, {
+      minMatchCharLength: 3,
+      threshold: 0.3,
+      distance: 1,
+      includeScore: true,
+      keys: ["email"],
+    });
+  } else {
+    fuse = new Fuse(mongo_rows, {
+      minMatchCharLength: 3,
+      threshold: 0.3,
+      distance: 1,
+      includeScore: true,
+      keys: ["occupation"],
+    });
+  }
 
-    fs.readFile(__dirname + '/userLog.json', (error, data) => {
+  let moresult = fuse.search(search_term3);
+  let mo_rows = [];
 
-        let newData = {};
+  moresult.forEach((element) => {
+    mo_rows.push(element.item);
+  });
 
-        newData.username = req.user.name;
-        newData.email = req.user.email;
-        newData.id = req.user.id;
-        newData.password = req.user.password
-        newData.searchterm = req.query.search
+  let both_rows = pgrows.concat(mo_rows);
 
-        if(error) {
-            throw error
-        } else {
-            console.log('userLog.json file read sucessfully')
-        }
+  res.render("searchboth.ejs", { name: req.user.name, both_rows });
 
-        data = JSON.parse(data)
+  fs.readFile(__dirname + "/userLog.json", (error, data) => {
+    let newData = {};
 
-        data.push(newData)
+    newData.username = req.user.name;
+    newData.email = req.user.email;
+    newData.id = req.user.id;
+    newData.password = req.user.password;
+    newData.searchterm = req.query.search;
 
-        write = JSON.stringify(data, null, 2)
+    if (error) {
+      throw error;
+    } else {
+      console.log("userLog.json file read sucessfully");
+    }
 
-        fs.writeFile(__dirname + '/userLog.json', write, (error) => {
-            if(error) throw error
-            console.log('Data wrote to userLog.json')
-        })
+    data = JSON.parse(data);
 
-    })
-})
+    data.push(newData);
 
-app.delete('/logout', (req, res) => {
-    req.logout(function(err) {
-        if (err) { return next(err); }
-        res.redirect('/login');
-      });
-    
-})
+    write = JSON.stringify(data, null, 2);
+
+    fs.writeFile(__dirname + "/userLog.json", write, (error) => {
+      if (error) throw error;
+      console.log("Data wrote to userLog.json");
+    });
+  });
+});
+
+app.delete("/logout", (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/login");
+  });
+});
 
 // this function handles what traffic is allowed on what webpage
 function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next()
-    } 
-    res.redirect('/login')
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
 }
 
 function checkNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-         return res.redirect('/login-after')
-    }
-    next()
+  if (req.isAuthenticated()) {
+    return res.redirect("/login-after");
+  }
+  next();
 }
 
 app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`)
-})
-
+  console.log(`Server is running on ${PORT}`);
+});
