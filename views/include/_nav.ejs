@@ -1,8 +1,18 @@
-<nav>
-  <a href="/login-after">Search Postgres</a>
-  <a href="/mongo">Search MongoDB</a>
-  <a href="/searchboth">Search Postgres and MongoDB</a>
-  <form action="/logout?_method=DELETE" method="POST">
-    <button type="submit">Log out</button>
-  </form>
-</nav>
+<nav class="navbar">
+    <div class="brand-title"><b>Search Bar Demo</b></div>
+    <a href="#" class="toggle-button" onclick="openMenu()">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </a>
+    <div class="navbar-links">
+      <ul>
+        <li><a href="/login-after">Postgres</a></li>
+        <li><a href="/mongo">MongoDB</a></li>
+        <li><a href="/searchboth">Postgres and MongoDB</a></li>
+        <li><form action="/logout?_method=DELETE" method="POST">
+            <button type="submit">Log out</button>
+          </form></li>
+      </ul>
+    </div>
+  </nav>

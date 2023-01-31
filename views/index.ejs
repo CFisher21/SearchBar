@@ -5,38 +5,42 @@
 <!--include nav-->
 <%- include('include/_nav') %>
 <!-- /include nav -->
-<h1>Hello, <%= name%></h1>
+<div class="center-container">
+<p class="greeting">Hello, <%= name%>. Ready to search Postgres?</p>
+</div>
+<div class="center-container">
 <form action="/search" method="GET">
-    <input type="text" name="search" placeholder="Search Postgres">
-    <label for="searchby">Search by: </label>
+    <input type="text" name="search" placeholder="Search Postgres" class="input-class2">
+    <label for="searchby" class="search-label">Search by: </label>
     <select id="searchby" name="searchby">
         <option value="firstname">First Name</option>
         <option value="lastname">Last Name</option>
         <option value="email">Email</option>
         <option value="occupation">Occupation</option>
     </select>
-    <input type="submit" value="Search">
+    <input class="search-button" type="submit" value="Search">
 </form>
+</div>
+<div class="center-container">
 <% if (typeof(postgres_rows) !== 'undefined') { %>
-    <table>
+    <table class="display-table">
     <tr>
-        <th>First Name </th>
-        <th>Last Name</th>
+        <th>Name </th>
         <th>Email</th>
         <th>Occupation</th> 
     </tr>   
     <% if(postgres_rows.length > 0) { %>
         <% postgres_rows.forEach(pgData => { %>
                     <tr>
-                        <th><%= pgData.first_name%></th>
-                        <th><%= pgData.last_name%></th>
-                        <th><%= pgData.email%></th> 
-                        <th><%= pgData.occupation%></th> 
+                        <td><%= pgData.first_name + " " + pgData.last_name%></td>
+                        <td class="table-email"><%= pgData.email%></td> 
+                        <td class="table-job"><%= pgData.occupation%></td> 
                     </tr>
             <% }) %>
     <% } %>
     </table>
 <%}%>
+</div>
 <!-- include footer -->
 <%- include('include/_footer') %>
 <!-- /include footer -->
