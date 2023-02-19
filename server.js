@@ -84,24 +84,33 @@ app.post(
 );
 
 app.post("/register", checkNotAuthenticated, async (req, res) => {
+   try{
+
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    
+    let user = {};
+    user.id = Date.now().toString(),
+    user.name = req.body.name,
+    user.email = req.body.email,
+    user.password = hashedPassword;
+
+    users.push(user);
+    console.log(users)
+
     fs.readFile(__dirname + "/users.json", (error, data) => {
-        let user = {};
-        user.id = Date.now().toString(),
-        user.name = req.body.name,
-        user.email = req.body.email,
-        user.password = hashedPassword;
-        data = JSON.parse(data);
-        data.push(user);
-        write = JSON.stringify(data, null, 2);
-        fs.writeFile(__dirname + "/users.json", write, (error) => {
-              if (error) throw error;
-              console.log("Data wrote to users.json");
-            });
-      
-    });
-    res.redirect("/login")
+      if(error) throw error;
+    data = JSON.parse(data);
+    data.push(user);
+    write = JSON.stringify(data, null, 2);
+    fs.writeFile(__dirname + "/users.json", write, (error) => {
+          if (error) throw error;
+          console.log("Data wrote to users.json");
+        });
+  
+});
+res.redirect("/login")
+   } catch {
+    res.redirect('/register')
+   }
 });
 
 // below are the search methods to search the databases
