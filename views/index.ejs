@@ -5,12 +5,17 @@
 <!--include nav-->
 <%- include('include/_nav') %>
 <!-- /include nav -->
+
+<!--Greet the user-->
 <div class="center-container">
 <p class="greeting">Hello, <%= name%>. Ready to search Postgres?</p>
 </div>
+<!--Form-->
 <div class="center-container">
 <form action="/search" method="GET">
+    <!--Search bar-->
     <input type="text" name="search" placeholder="Search Postgres" class="input-class2">
+    <!--Drop down menu-->
     <label for="searchby" class="search-label">Search by: </label>
     <select id="searchby" name="searchby">
         <option value="firstname">First Name</option>
@@ -21,6 +26,9 @@
     <input class="search-button" type="submit" value="Search">
 </form>
 </div>
+<!--End of form-->
+
+<!--Displays the results you get back from the database-->
 <div class="center-container">
 <% if (typeof(postgres_rows) !== 'undefined') { %>
     <table class="display-table">
@@ -41,6 +49,7 @@
     </table>
 <%}%>
 </div>
+
 <!-- include footer -->
 <%- include('include/_footer') %>
 <!-- /include footer -->

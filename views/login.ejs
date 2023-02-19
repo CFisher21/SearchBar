@@ -1,6 +1,8 @@
 <!-- include header -->
 <%- include('include/_header') %>
 <!-- /include header -->
+
+<!--Form-->
 <div class="login-container">
   <form action="/login" method="POST" class="registerForm">
     <div class="center-container">
@@ -9,20 +11,26 @@
     <div class="center-container">
       <% if (messages.error) { %> <%= messages.error %> <% } %>
     </div>
+    <!--Input for Email-->
     <div class="form-group">
       <input type="text" id="email" name="email" placeholder="Email" class="input-class" />
     </div>
     <div class="form-group">
+    <!--Input for Password-->
       <input type="text" id="password" name="password" placeholder="Password" class="input-class" />
     </div>
+    <!--Submit Button-->
     <div class="center-container">
       <button type="submit"  class="submit-button">Login</button>
     </div>
+    <!--Registration Link-->
     <div class="center-container" id="add-space">
       <p>Don't have an account yet? <a href="/register">Register</a></p>
     </div>
   </form>
 </div>
+<!--End of form-->
+
 <!-- include footer -->
 <%- include('include/_footer') %>
 <!-- /include footer -->

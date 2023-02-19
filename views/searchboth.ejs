@@ -5,12 +5,17 @@
 <!--include nav-->
 <%- include('include/_nav') %>
 <!-- /include nav -->
+
+<!--Greet the user-->
 <div class="center-container">
 <p class="greeting2">Hello, <%= name%>. Ready to search both Postgres and MongoDB?</p>
 </div>
+<!--Form-->
 <div class="center-container">
 <form action="/searchBothResults" method="GET">
+    <!--Search bar-->
     <input type="search" name="search" placeholder="Search Both" class="input-class2">
+    <!--Drop down menu-->
     <label for="searchby" class="search-label">Search by: </label>
     <select id="searchby" name="searchby">
         <option value="firstname">First Name</option>
@@ -21,6 +26,9 @@
     <button class="search-button" type="submit">Search</button>
 </form>
 </div>
+<!--End of form-->
+
+<!--Displays the results you get back from the database-->
 <div class="center-container">
 <% if (typeof(both_rows) !== 'undefined') { %>
     <table class="display-table">
@@ -41,6 +49,7 @@
     </table>
 <%}%>
 </div>
+
 <!-- include footer -->
 <%- include('include/_footer') %>
 <!-- /include footer -->

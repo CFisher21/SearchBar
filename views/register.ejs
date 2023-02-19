@@ -1,12 +1,15 @@
 <!-- include header -->
 <%- include('include/_header') %>
 <!-- /include header -->
+
+<!--Form-->
 <div class="login-container">
   <form action="/register" method="POST" class="registerForm">
     <div class="center-container">
       <h1 class="heading">Register</h1>
     </div>
     <div class="form-group">
+      <!--Input for Name-->
       <input
         type="text"
         id="name"
@@ -15,6 +18,7 @@
         class="input-class"
       />
     </div>
+    <!--Input for Email-->
     <div class="form-group">
       <input
         type="email"
@@ -24,6 +28,7 @@
         class="input-class"
       />
     </div>
+    <!--Input for Password-->
     <div class="form-group">
       <input
         type="text"
@@ -33,9 +38,11 @@
         class="input-class"
       />
     </div>
+    <!--Submit Button-->
     <div class="center-container">
       <button type="submit" class="submit-button">Register</button>
     </div>
+    <!--Terms and Privacy Links-->
     <div class="center-container" id="text-center">
       <p>By registering an account, you agree to our</p>
     </div>
@@ -45,11 +52,14 @@
         <a href="/privacy" target="_blank"> Privacy Policy</a>
       </p>
     </div>
+    <!--Login Link-->
     <div class="center-container" id="add-space">
       <p>Already have an account? <a href="/login">Login</a></p>
     </div>
   </form>
 </div>
+<!--End of Form-->
+
 <!-- include footer -->
 <%- include('include/_footer') %>
 <!-- /include footer -->
