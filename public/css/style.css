@@ -9,7 +9,7 @@ body{
 }
 
 a {
-    color: #FAF9F6
+    color: black
 }
 
 #top-margin{
@@ -110,16 +110,16 @@ a {
 }
 
 .display-table {
-    border: 2px solid #FB8500;
+    border: 2px solid black;
     margin-top: 1rem;
     border-collapse: collapse;
     background-color: #FFB703;
 }
 
 th, td {
-    border-bottom: 2px solid #FB8500;
+    border-bottom: 2px solid black;
     padding: 8px;
-    color: #1d5dff;
+    color: black;
 }
 
 .table-email {
@@ -129,7 +129,7 @@ th, td {
     text-align: right;
 }  
 
-tr:hover {background-color: #FFB703;}
+tr:hover {background-color: #ffb8036b;}
 
 .footer {
     position: static;
