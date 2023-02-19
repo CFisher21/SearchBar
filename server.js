@@ -94,7 +94,6 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
     user.password = hashedPassword;
 
     users.push(user);
-    console.log(users)
 
     fs.readFile(__dirname + "/users.json", (error, data) => {
       if(error) throw error;
