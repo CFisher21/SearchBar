@@ -81,17 +81,17 @@ We Recommend using pgAdmin4 for the local database Link - https://www.pgadmin.or
 8. Register an account, log in and then you're free to search whatever you like
 
 ## Screenshots
-### Register Page Desktop
+### Register Desktop
 ![Imgur](https://i.imgur.com/cvzo4nr.png)
-### Login Page Desktop
+### Login Desktop
 ![Imgur](https://i.imgur.com/D8EZzdk.png)
-### Search Page Desktop 
+### Search Desktop 
 ![Imgur](https://i.imgur.com/wboboNC.png)
-### Register Page Mobile
+### Register Mobile
 ![Imgur](https://i.imgur.com/I40xDNP.png)
-### Login Page Mobile
+### Login Mobile
 ![Imgur](https://i.imgur.com/UvmIz9C.png)
-### Search Page Mobile
+### Search Mobile
 ![Imgur](https://i.imgur.com/iOUZmUj.png)
-### Search Page Showing Navigation
+### Mobile Navigation
 ![Imgur](https://i.imgur.com/cpAWTa5.png)
