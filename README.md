@@ -11,7 +11,7 @@ Search bar web application built for demo purposes.
 
 This project is wrote in **JavaScript** using **Node.js**
 
-The point of this project was to make a web application that someone could use to look up potiental employees. You can log into the webpage and from there you have the option to search three different databases for employees with the third being a combination of the first two, meaning you can search both databases at the same time. This project is made with fully custom CSS and it is dynamic so ***it will work on both computer and mobile.*** It's worth to note that this is one of the first projects made by this developer.
+The point of this project was to make a web application that someone could use to look up potiental employees. You can log into the webpage and from there you have the option to search three different databases for employees with the third being a combination of the first two, meaning you can search both databases at the same time. Fuzzy string matching has been incorparated as well so the search term does not have to be an exact match. There is a user log which records what the user has searched. This project is made with fully custom CSS and it is dynamic so ***it will work on both computer and mobile.*** It's worth to note that this is one of the first projects made by this developer.
 
 The Node.js modules used for this project include:
 - Express.js
