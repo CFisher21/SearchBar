@@ -28,48 +28,6 @@ This project also incorpirates the use of two different databases:
 ## How to use
 To use this application we recommend using **Visual Studio Code** by microsoft. Link - https://visualstudio.microsoft.com/
 
-#### Setting up PostgresSQL server
-We Recommend using pgAdmin4 for the local database Link - https://www.pgadmin.org/download/
-1. Download pgAdmin4 from the link above and install it.
-2. Once install set up the admin user and password.
-3. Right click on PostgreSQL 14 and hit create Login/Group role.
-4. Create a user with the name "qap3" and set the password to "1234".
-5. Click the query tool at the top and run the following SQL statement:
-
-    CREATE DATABASE sprint02</br>
-    WITH</br>
-    OWNER = postgres</br>
-    ENCODING = 'UTF8'</br>
-    LC_COLLATE = 'English_Canada.1252'</br>
-    LC_CTYPE = 'English_Canada.1252'</br>
-    TABLESPACE = pg_default</br>
-    CONNECTION LIMIT = -1;
-    
-6. Then run this statement:
-
-   CREATE TABLE IF NOT EXISTS public.mock_data</br>
-(</br>
-    employee_id integer,</br>
-    first_name character varying(50) COLLATE pg_catalog."default",</br>
-    last_name character varying(50) COLLATE pg_catalog."default",</br>
-    email character varying(50) COLLATE pg_catalog."default",</br>
-    occupation character varying(50) COLLATE pg_catalog."default",</br>
-    currently_working character varying(50) COLLATE pg_catalog."default"</br>
-)</br>
-
-    TABLESPACE pg_default;</br>
-
-    ALTER TABLE IF EXISTS public.mock_data</br>
-    OWNER to postgres;</br>
-    
-7. Then run this statement: 
-
-  	INSERT INTO public.mock_data(</br>
-	employee_id, first_name, last_name, email, occupation, currently_working)</br>
-	VALUES (?, ?, ?, ?, ?, ?);</br>
-  
-  **Replace the ?,'s inside the value brackets with all the data that is inside the SearchBarDatabase.csv** **Do not remove the brackets or ;**
-  
 #### Running the application
 1. Install Node.js. Go to this link https://nodejs.org/en/ and install the latest version of Node.js.
 2. Clone this repository and open it inside of Visal Stuido Code.
