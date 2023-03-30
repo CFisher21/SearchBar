@@ -6,7 +6,7 @@
 
 **Notes about live webpage**
 - Register page is not working
-- Use **email:** a@a **Password:** 1 to log into the service
+- Use **email:** *a@a* **Password:** *1* to log into the service
 - Application will randomly log you out at times when switching between pages or after searching on the application
 - If you are getting no resluts after searching the SQL server may be down (it's moderatly expensive for me at the moment). Just send me an email or message me on Linkedin and I will put it up for you ASAP.
 
