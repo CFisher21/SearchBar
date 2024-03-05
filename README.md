@@ -1,6 +1,6 @@
 # Search Bar Web Application
 
-## Live Webpage **Tons of bugs to work out of deployment yet**
+## Live Webpage 
 
 Link - https://enhanced-emblem-381103.uw.r.appspot.com/login
 
