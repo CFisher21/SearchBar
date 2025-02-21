@@ -4,7 +4,7 @@
   "description": "Final sprint project for Keyin College semester 3 2022 ",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon server.js"
+    "devStart": "nodemon server.js",
      "start": "node app.js"
   },
   "keywords": [
