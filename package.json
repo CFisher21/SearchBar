@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "devStart": "nodemon server.js"
+     "start": "node app.js"
   },
   "keywords": [
     "CRUD",
