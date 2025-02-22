@@ -40,7 +40,7 @@
     <% if(postgres_rows.length > 0) { %>
         <% postgres_rows.forEach(pgData => { %>
                     <tr>
-                        <td><%= pgData.first_name + " " + pgData.last_name%></td>
+                        <td><%= pgData.firstname + " " + pgData.lastname%></td>
                         <td class="table-email"><%= pgData.email%></td> 
                         <td class="table-job"><%= pgData.occupation%></td> 
                     </tr>
