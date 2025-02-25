@@ -1,8 +1,9 @@
 # Search Bar Web Application
 
-## Live Webpage 
+## Important Notice
+This website is hosted on Render. It is using a free tier service. When you access the website please allow up to 60 seconds for the service to become available
 
-Link - https://enhanced-emblem-381103.uw.r.appspot.com/login
+
 
 **Notes about live webpage**
 - Register page is not working
