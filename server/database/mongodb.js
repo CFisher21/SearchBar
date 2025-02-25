@@ -2,7 +2,7 @@
 const { MongoClient } = require('mongodb');
 
 // Define a connection string for a MongoDB Atlas cluster
-const uri = "mongodb+srv://admin:admin123@searchbar.ipl9gvt.mongodb.net/test";
+const uri = "mongodb+srv://admin:bluefeet1234@clients.keddl.mongodb.net/?retryWrites=true&w=majority&appName=Clients";
 
 // Create a new `MongoClient` instance using the connection string
 const pool = new MongoClient(uri);

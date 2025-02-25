@@ -8,7 +8,7 @@ async function mongoSearch() {
         await dal.connect();
 
         // Retrieve all the documents in the "sprint2" collection using the `find()` method on the MongoDB collection object
-        const mongoData = dal.db('SearchBar').collection('sprint2').find({});
+        const mongoData = dal.db('MongoDatabase').collection('Clients').find({});
 
         // Wait for the results to be converted into an array using the `toArray()` method
         const results = await mongoData.toArray();

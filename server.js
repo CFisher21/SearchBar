@@ -181,7 +181,7 @@ app.get("/mongoSearch", checkAuthenticated, async (req, res) => {
   // This queries the whole mongoDB database
   let mongo_rows = await mDal.mongoSearch();
   // This has code that fuse uses, it's used again at another point so we ship it to a function 
-  useFuse(mongo_rows, search_by);
+  const fuse = useFuse(mongo_rows, search_by);
   // Uses fuse to create a fuzzy search
   const result = fuse.search(search_term2);
   // Renders the webpage with the results we got from fuse
@@ -203,7 +203,7 @@ app.get("/searchBothResults", checkAuthenticated, async (req, res) => {
   // Gives us all the data from the mongoDB database
   let mongo_rows = await mDal.mongoSearch();
   // This has code that fuse uses
-  useFuse(mongo_rows, search_by);
+  const fuse = useFuse(mongo_rows, search_by);
   // Uses fuse to create a fuzzy search for the mongoDB results
   let moresult = fuse.search(search_term3);
   // Empty array
@@ -214,6 +214,7 @@ app.get("/searchBothResults", checkAuthenticated, async (req, res) => {
   });
   // Adds the mongoDB and the postgres results together
   let both_rows = pgrows.concat(mo_rows);
+  console.log(both_rows)
   // Renders the webpage with the results we just searched for
   res.render("searchboth.ejs", { name: req.user.name, both_rows });
   // Writes the 'userLog.json' file
@@ -260,23 +261,23 @@ function checkNotAuthenticated(req, res, next) {
 function useFuse(mongo_rows, search_by) {
   // Check which field to search by and create a new Fuse object with the specified keys
   if (search_by == "firstname") {
-    fuse = new Fuse(mongo_rows, {
+    return new Fuse(mongo_rows, {
       minMatchCharLength: 3,  // Minimum character length to consider a match
       threshold: 0.3,  // Match threshold for considering a result to be a match
       distance: 1,  // Maximum edit distance for a match
       includeScore: true,  // Whether to include score in search results
-      keys: ["first_name"],  // Keys to search for a match
+      keys: ["firstname"],  // Keys to search for a match
     });
   } else if (search_by == "lastname") {
-    fuse = new Fuse(mongo_rows, {
+    return new Fuse(mongo_rows, {
       minMatchCharLength: 3,
       threshold: 0.3,
       distance: 1,
       includeScore: true,
-      keys: ["last_name"],
+      keys: ["lastname"],
     });
   } else if (search_by == "email") {
-    fuse = new Fuse(mongo_rows, {
+    return new Fuse(mongo_rows, {
       minMatchCharLength: 3,
       threshold: 0.3,
       distance: 1,
@@ -284,7 +285,7 @@ function useFuse(mongo_rows, search_by) {
       keys: ["email"],
     });
   } else {
-    fuse = new Fuse(mongo_rows, {
+    return new Fuse(mongo_rows, {
       minMatchCharLength: 3,
       threshold: 0.3,
       distance: 1,

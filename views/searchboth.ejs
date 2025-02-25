@@ -38,11 +38,11 @@
         <th>Occupation</th> 
     </tr>   
     <% if(both_rows.length > 0) { %>
-        <% both_rows.forEach(pgData => { %>
+        <% both_rows.forEach(item => { %>
                     <tr>
-                        <td><%= pgData.first_name + " " + pgData.last_name%></td>
-                        <td class="table-email"><%= pgData.email%></td> 
-                        <td class="table-job"><%= pgData.occupation%></td> 
+                        <td><%= item.firstname + " " + item.lastname%></td>
+                        <td class="table-email"><%= item.email%></td> 
+                        <td class="table-job"><%= item.occupation%></td> 
                     </tr>
             <% }) %>
     <% } %>
